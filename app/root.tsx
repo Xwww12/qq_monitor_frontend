@@ -1,3 +1,4 @@
+import { Suspense, lazy, useState } from "react";
 import {
   isRouteErrorResponse,
   Links,
@@ -8,7 +9,10 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import MouseStalker from "./components/MouseStalker";
 import "./app.css";
+
+const LoadingScreen = lazy(() => import("./components/LoadingScreen"));
 
 // export const links: Route.LinksFunction = () => [
 //   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -42,7 +46,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const [loading, setLoading] = useState(true);
+
+  if (loading) {
+    return (
+      <Suspense fallback={null}>
+        <LoadingScreen onDone={() => setLoading(false)} />
+      </Suspense>
+    );
+  }
+
+  return (
+    <>
+      <MouseStalker />
+      <Outlet />
+    </>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
