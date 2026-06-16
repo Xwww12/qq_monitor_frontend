@@ -1,5 +1,6 @@
 import type { Route } from "./+types/home";
 import React, {useEffect, useMemo, useState} from 'react';
+import AnimatedPanel from '~/components/AnimatedPanel';
 // 后端接口
 import {getHourMsgCnt, getDayMsgCnt, getCurrentStatus, getLastSpeaker} from '~/apis/monitor';
 // 折线图
@@ -149,7 +150,7 @@ function GlobalLayout () {
 
               {/* 第一行 */}
               <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div className="md:col-span-3 relative overflow-hidden p-6 rounded-xl shadow-sm h-[400px] bg-white/10 backdrop-blur-md border border-white/20">
+                  <AnimatedPanel index={0} className="md:col-span-3 relative overflow-hidden p-6 rounded-xl shadow-sm h-[400px] bg-white/10 backdrop-blur-md border border-white/20">
                       {/* 背景图片层 */}
                       <div
                           className="absolute inset-0 z-0 opacity-20 bg-cover bg-center"
@@ -166,18 +167,18 @@ function GlobalLayout () {
                           </div>
 
                       </div>
-                  </div>
+                  </AnimatedPanel>
 
                   <div className="md:col-span-1 flex flex-col gap-6 h-[400px]">
                       {/* 右上：时钟 */}
-                      <div className="flex-1 p-6 rounded-xl shadow-sm flex flex-col items-center justify-center bg-white/10 backdrop-blur-md border border-white/20">
+                      <AnimatedPanel index={1} className="flex-1 p-6 rounded-xl shadow-sm flex flex-col items-center justify-center bg-white/10 backdrop-blur-md border border-white/20">
                           <div className="w-full max-w-[110px]">
                               <GlowClock />
                           </div>
-                      </div>
+                      </AnimatedPanel>
 
                       {/* 右中：机器人状态 */}
-                      <div className="flex-1 p-4 rounded-xl shadow-sm flex items-center justify-start gap-4 bg-white/10 backdrop-blur-md border border-white/20">
+                      <AnimatedPanel index={2} className="flex-1 p-4 rounded-xl shadow-sm flex items-center justify-start gap-4 bg-white/10 backdrop-blur-md border border-white/20">
                           {/* 左侧：圆形头像框 */}
                           <div className="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center text-slate-300 font-bold text-lg overflow-hiddenborder border-white/10">
                               {/* 这里可以放一个 img 标签，或者简单的文字/图标 */}
@@ -203,21 +204,21 @@ function GlobalLayout () {
                                   )}
                               </div>
                           </div>
-                      </div>
+                      </AnimatedPanel>
 
                       {/* 右下：说话人 */}
-                      <div className="flex-1 p-4 rounded-xl shadow-sm flex items-center justify-start gap-4 bg-white/10 backdrop-blur-md border border-white/20">
+                      <AnimatedPanel index={3} className="flex-1 p-4 rounded-xl shadow-sm flex items-center justify-start gap-4 bg-white/10 backdrop-blur-md border border-white/20">
                           <div
                               className="absolute inset-0 z-0 opacity-20 bg-cover bg-center"
                               style={{ backgroundImage: "url('/img/background/2.png')" }}
                           ></div>
                           <p className="text-xl text-slate-400 uppercase">📢：{speakerData?.sender_name}刚刚发言了</p>
-                      </div>
+                      </AnimatedPanel>
                   </div>
               </section>
 
               {/* 第二行：占满整行 */}
-              <section className="w-full p-6 rounded-xl bg-white/10 backdrop-blur-md border border-white/20">
+              <AnimatedPanel index={4} className="w-full p-6 rounded-xl bg-white/10 backdrop-blur-md border border-white/20">
                   <h3 className="font-bold mb-4 text-white">每日消息总数</h3>
 
                   {/* 1. 外层：负责提供滚动条 */}
@@ -233,7 +234,7 @@ function GlobalLayout () {
                       </div>
 
                   </div>
-              </section>
+              </AnimatedPanel>
 
               {/* 第三行：空着且自适应 */}
               {/*<section className="flex-grow border-2 border-dashed border-gray-300 rounded-xl min-h-[200px]">*/}
