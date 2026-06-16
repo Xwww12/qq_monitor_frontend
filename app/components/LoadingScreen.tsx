@@ -1,7 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import BackgroundGlow from "./BackgroundGlow";
 
-const TOTAL_SEGMENTS = 32;
+const FILL_COLOR = "rgb(147, 76, 204)";
+const FILL_GLOW = "0 0 6px rgba(147, 76, 204, 0.5)";
 
 interface LoadingScreenProps {
   onDone: () => void;
@@ -11,6 +13,12 @@ export default function LoadingScreen({ onDone }: LoadingScreenProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const segmentRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
+  // 小屏幕减少格子数（20 格），大屏 32 格
+  const [segmentCount] = useState(() => {
+    if (typeof window === "undefined") return 32;
+    return window.innerWidth < 768 ? 20 : 32;
+  });
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -18,18 +26,12 @@ export default function LoadingScreen({ onDone }: LoadingScreenProps) {
     const state = { p: 0 };
 
     function updateProgress() {
-      const n = Math.ceil(Math.max(0, Math.min(1, state.p)) * TOTAL_SEGMENTS);
-      for (let i = 0; i < TOTAL_SEGMENTS; i++) {
+      const n = Math.ceil(Math.max(0, Math.min(1, state.p)) * segmentCount);
+      for (let i = 0; i < segmentCount; i++) {
         const el = segmentRefs.current[i];
         if (el) {
-          el.style.background =
-            i < n
-              ? "#00ffff"
-              : "rgba(51,65,85,0.5)";
-          el.style.boxShadow =
-            i < n
-              ? "0 0 6px rgba(0,255,255,0.5)"
-              : "none";
+          el.style.background = i < n ? FILL_COLOR : "rgba(51,65,85,0.5)";
+          el.style.boxShadow = i < n ? FILL_GLOW : "none";
         }
       }
     }
@@ -64,31 +66,29 @@ export default function LoadingScreen({ onDone }: LoadingScreenProps) {
     return () => {
       tl.kill();
     };
-  }, [onDone]);
+  }, [onDone, segmentCount]);
 
   // Pre-fill the refs array
-  segmentRefs.current = new Array(TOTAL_SEGMENTS).fill(null);
+  segmentRefs.current = new Array(segmentCount).fill(null);
 
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-12 bg-[#0f172a]"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-12"
     >
-      <h1
-        className="uppercase tracking-[4px] select-none text-[20px] md:text-[28px]"
-        style={{
-          fontFamily: "'Orbitron', sans-serif",
-          color: "transparent",
-          WebkitTextStroke: "2px #00ffff",
-          filter:
-            "drop-shadow(0 0 5px #00ffff) drop-shadow(0 0 10px #00ffff)",
-        }}
-      >
-        Loading...
-      </h1>
+      {/* 背景光晕，和主页一致 */}
+      <div className="absolute inset-0 opacity-30">
+        <BackgroundGlow />
+      </div>
+
+      <img
+        src="/img/open-screen/开屏图片.jpg"
+        alt="Loading"
+        className="w-[160px] md:w-[200px] select-none rounded-xl"
+      />
 
       <div className="flex justify-center gap-0.5 md:gap-[6px]">
-        {Array.from({ length: TOTAL_SEGMENTS }, (_, i) => (
+        {Array.from({ length: segmentCount }, (_, i) => (
           <span
             key={i}
             ref={(el) => {
